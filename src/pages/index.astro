@@ -1,57 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { siteConfig } from '../config/site';
+import Hero from '../components/Hero.astro';
 ---
 
 <BaseLayout>
-  <main id="main-content" class="test-container">
-    <div class="content">
-      <p class="role-line">{siteConfig.roleLine}</p>
-      <h1 class="headline">{siteConfig.heroHeadline}</h1>
-      <p class="name">{siteConfig.name}</p>
-    </div>
+  <main id="main-content">
+    <Hero />
   </main>
 </BaseLayout>
-
-<style>
-  .test-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-    background-color: var(--bg);
-  }
-
-  .content {
-    max-width: var(--measure-content);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .role-line {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--emerald-soft);
-    letter-spacing: 0.04em;
-    line-height: var(--leading-snug);
-  }
-
-  .headline {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, var(--text-5xl));
-    font-weight: 700;
-    color: var(--text);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.02em;
-  }
-
-  .name {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.01em;
-  }
-</style>

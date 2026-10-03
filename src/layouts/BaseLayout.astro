@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import Navigation from '../components/Navigation.astro';
 import { siteConfig } from '../config/site';
 import '../styles/global.css';
 
@@ -28,6 +29,7 @@ const {
     <Font cssVariable="--font-jetbrains" preload />
   </head>
   <body>
+    <Navigation />
     <slot />
   </body>
 </html>
