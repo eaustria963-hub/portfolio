@@ -57,12 +57,48 @@ Every text/background pair must meet **WCAG AA** contrast. Measure it and fix an
 
 ### Glow and motion
 
-- **Glow:** emerald light bleeding from behind elements, thin lines that pulse faintly, soft glowing edges on hover. Low opacity. Always limited to a few elements.
-- **Spend boldness in one place.** The memorable moment is the **hero** (slow emerald glow plus a faint system-map of lines and nodes drawing themselves). Everything else stays quiet.
-- **Avoid generic tells:** a fade-and-slide-up on every section, hover transitions on every card, all-caps tracked eyebrow labels above every heading, numbered markers (01/02/03) on content that is not a real sequence, a grid of identical rounded cards with identical shadows.
-- Motion answers the visitor's action (opening the modal, switching the archive menu, hovering a map node) or draws attention once. Slow and smooth.
-- **Respect `prefers-reduced-motion`:** remove or reduce all non-essential motion.
-- Prefer CSS and native browser APIs (IntersectionObserver, `<dialog>`). Check browser support before relying on newer features like scroll-driven animations. Add a library only if it is clearly justified and light.
+- **Glow:** emerald light bleeding from behind elements, thin lines that pulse faintly, soft glowing edges on hover. Low opacity. Always limited to a few elements. The main glow effect in the hero comes from **signals travelling between neurons** (see "Hero visual").
+- **Spend boldness in two places only:** the **hero neural sphere** (below) and the **scroll motion system** (below). Everything else stays quiet.
+- **Avoid generic tells:** the same fade-and-slide-up on every element, hover transitions on every card, all-caps tracked eyebrow labels above every heading, numbered markers (01/02/03) on content that is not a real sequence, a grid of identical rounded cards with identical shadows.
+- Motion also answers the visitor's action (opening the modal, switching the archive menu, hovering a map node). Slow and smooth.
+- **Respect `prefers-reduced-motion`:** remove all non-essential motion and show final states immediately.
+- Prefer CSS and native browser APIs (IntersectionObserver, `<dialog>`, canvas). Add a library only if it is clearly justified and light, and ask the owner first.
+
+### Hero visual: neural sphere (owner-approved concept)
+
+Inspired by the owner's reference (a spinning sphere of "brain cells"). **Build our own version. Do not copy another designer's work.**
+
+- **Placement:** the right side of the **hero section only**. It does NOT follow the visitor, does NOT react to scroll, and does NOT react to the mouse. It must never overlap the hero text. On phones it sits behind or below the text at lower opacity.
+- **What it is:** a sphere made of identical small dots (neurons), thin faint lines between neighbouring neurons, and the whole sphere spinning slowly (Y-axis rotation with a slight X tilt). Each neuron drifts a tiny amount and **pulses softly** (size/opacity, random phase), like neurons in typical brain animations.
+- **Signals (the glow):** small bright points travel along the connection lines from neuron to neuron, with a short fading trail. Several at once (about 3 to 6 on desktop). The glow comes from the signals and the pulsing, not from a big blurry halo. Soft emerald, never neon.
+- **Hub neurons:** 8 slightly larger neurons carry the GHL labels (CRM, Workflows, Pipelines, Forms, SMS, Calendars, API, AI) in tiny JetBrains Mono. A label is visible only while its hub faces the viewer and fades as it rotates to the back.
+- **Colors:** neurons `--emerald-soft` at varying low opacity, lines `--emerald`, signals a lighter emerald. Stay dark and restrained, no bright colors.
+- **Technique:** one `<canvas>` with plain JavaScript and simple 3D projection math. **No three.js and no other library.** Cap devicePixelRatio (2 on desktop, 1.5 on phones). About 200 to 260 neurons on desktop, about 100 to 140 on phones. Add an adaptive step: if frames run slow, reduce neuron count and signals.
+- **Performance and access:** pause when the sphere is off-screen (IntersectionObserver) and when the tab is hidden. Under `prefers-reduced-motion`, draw one still frame. The canvas is `aria-hidden` and decorative. Text over or near it must keep WCAG AA contrast.
+- **Build it in three small steps:** (a) static sphere with neurons and lines, (b) rotation, pulsing and signals, (c) hub labels, mobile reduction, pause/reduced-motion. Owner reviews on screen between steps.
+- This replaces the earlier 2D "system map" SVG in the hero, which is removed.
+
+### Scroll motion system (owner-approved, intensity: MEDIUM)
+
+The owner wants scroll animation on elements across the **whole website**. It must play forward when scrolling down and **backward when scrolling up**. Build it **once** as a small set of reusable classes or attributes (for example `data-motion="headline"`) in the shared styles, then each section just uses them.
+
+- **Technique:** CSS scroll-driven animations (`animation-timeline: view()`), wrapped in `@supports (animation-timeline: view())`. Verified facts: Chrome and Edge support it (since version 115), Safari since version 26, Firefox does not support it (behind a setting). **Content must look complete and correct with no animation at all** (Firefox, reduced motion, no support). A tiny IntersectionObserver fallback for simple reveals in unsupported browsers is allowed if it stays very small. Check browser support again before relying on it.
+- **No scroll-jacking:** do not hijack or smooth the scroll, and do not add a smooth-scroll library.
+- **Animate only `transform` and `opacity`** (and `stroke-dashoffset` for drawn lines). Never animate layout properties.
+- **Effects by element type** (starting values for MEDIUM; tune on screen):
+
+| Element | Effect |
+|---|---|
+| Headlines | start slightly oversized and faint (scale about 1.06, opacity about 0.15), then zoom out and settle (scale 1, opacity 1) as they enter |
+| Paragraphs | opacity 0 to 1 with a small rise (about 24px) |
+| Images and screenshots | opacity 0 to 1 and scale about 0.94 to 1, with a soft emerald edge glow |
+| Lines and diagrams (process flow, GHL map) | stroke draws itself with scroll |
+| Lists and cards | enter one after another with staggered ranges |
+| Backgrounds | gentle parallax, drifting about 24px slower than the text |
+
+- Do not use the same effect on everything. Assign each element the effect for its type.
+- **Reduced motion:** no scroll animation at all, everything fully visible immediately.
+- **Build order:** create the system and test it on the existing hero text first, then each new section adopts it.
 
 ## 3. Site map
 
@@ -74,7 +110,7 @@ Contact is a section on Home plus a link in the navigation. There is no separate
 
 ## 4. Home page: scroll order
 
-1. **Hero.** Name, role line, headline, a short supporting line, and two actions ("View projects", "Contact"). Slow emerald glow and the faint system-map animation behind the text.
+1. **Hero.** Name, role line, headline, a short supporting line, and two actions ("View projects", "Contact"). The **neural sphere** sits on the right of the hero (see "Hero visual"). The role line fits on one row on desktop. The navigation and the hero share the same container, so their left edges align.
 2. **GHL Mastery (the main section).** An interactive map of GHL areas (section 5). Hovering or focusing a node reveals what Erwin does with it.
 3. **Selected work.** 3 to 4 featured projects, with the flagship largest. A "View all projects" link goes to the archive.
 4. **Beyond GHL.** Smaller section: AI automation (n8n, Make, Zapier, chatbots), WordPress and web development, technical support.
@@ -162,7 +198,11 @@ Project fields: `title` (anonymous), `industry`, `categories` (one or more of th
 ## 11. Build phases (one request each; review and commit between phases)
 
 0. **Foundation:** tokens, fonts, base layout, global styles, one config file for contact details and role line. No content yet.
-1. **Hero and navigation** (the memorable moment).
+1. **Hero and navigation**, in sub-steps:
+   - 1a: fix the current hero (nav and hero share one container so left edges align; role line on one row on desktop; remove the old SVG map) and add a static neural sphere.
+   - 1b: sphere rotation, pulsing and travelling signals.
+   - 1c: hub labels, mobile reduction, pause when off-screen, reduced-motion still frame.
+   - 1d: the scroll motion system (section 2), tested on the hero text.
 2. **GHL Mastery map.**
 3. **Projects:** content collection, archive with menu, flagship case study page. Only blurred and compressed images.
 4. **Bio section and modal.**
@@ -179,3 +219,5 @@ After each phase the agent reports: what was built, what it verified in the docs
 - Blurred and compressed project images (prepared project by project).
 - Higher-resolution portraits, if available.
 - Any results or numbers the owner is happy to publish.
+- Phone-width review of the hero and menu (owner to test on a real phone).
+- Owner to check frame smoothness of the sphere and scroll motion on their own PC and phone.
