@@ -1,0 +1,108 @@
+/* Design Tokens: Section 2 (Visual Direction) */
+:root {
+  /* Surfaces & Structure */
+  --bg: #07090A;
+  --surface: #0D1211;
+  --line: #1A2623;
+
+  /* Accent & Atmosphere */
+  --emerald: #0F5C48;
+  --emerald-soft: #2E8B6E;
+
+  /* Typography Colors */
+  --text: #E8ECEA;
+  --text-muted: #8A9A94;
+
+  /* Typography Families (linked to Astro Fonts API variables) */
+  --font-display: var(--font-syne, 'Syne', system-ui, sans-serif);
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-body: var(--font-display);
+
+  /* Type Scale */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px */
+  --text-6xl: 3.75rem;    /* 60px */
+
+  /* Line Heights */
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+
+  /* Measure constraint per brief (< ~75ch) */
+  --measure-content: 75ch;
+}
+
+/* Base Resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 100%;
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Visible Keyboard Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--emerald-soft);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Respect Prefers-Reduced-Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
